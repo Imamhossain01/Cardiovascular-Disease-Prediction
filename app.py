@@ -51,16 +51,16 @@ st.subheader("📋 Patient Clinical Profiles")
 col1, col2 = st.columns(2)
 
 with col1:
-    age_years = st.number_input("Age (Years)", min_value=1, max_value=120, value=30)
+    age_years = st.number_input("Age (Years)", min_value=1, max_value=120, value=25)
     
     gender_selection = st.selectbox("Gender", ["Male", "Female"])
     gender = 1 if gender_selection == "Male" else 0
     
     st.write("**Height Assignment**")
     height_ft = st.number_input("Feet", min_value=1, max_value=8, value=5)
-    height_in = st.number_input("Inches", min_value=0, max_value=11, value=7)
+    height_in = st.number_input("Inches", min_value=0, max_value=11, value=6)
     
-    weight_kg = st.number_input("Weight (kg)", min_value=10.0, max_value=250.0, value=65.0, step=0.5)
+    weight_kg = st.number_input("Weight (kg)", min_value=10.0, max_value=250.0, value=75.0, step=0.5)
 
 with col2:
     cholesterol = st.number_input("Cholesterol Level (mg/dL)", min_value=100, max_value=500, value=170)
@@ -87,27 +87,24 @@ with col4:
 # ==========================================
 # Feature Engineering & Live Calculations
 # ==========================================
-# 1. Convert Age in years to Days (Required for standard CVD Dataset)
-age_days = int(age_years * 365.25) 
-
-# 2. Height conversion (Feet & Inches to cm and meters)
+# 1. Height conversion (Feet & Inches to cm and meters)
 total_inches = (height_ft * 12) + height_in
 height_cm = total_inches * 2.54
 height_meters = total_inches * 0.0254
 
-# 3. Live BMI Calculation
+# 2. Live BMI Calculation
 if height_meters > 0:
     calculated_bmi = weight_kg / (height_meters ** 2)
 else:
     calculated_bmi = 0.0
 
-# 4. Live Pulse Pressure Calculation
+# 3. Live Pulse Pressure Calculation
 calculated_pulse_pressure = systolic_bp - diastolic_bp
 
-# 5. Live Age-BMI Risk Calculation (Using Age in Days)
-calculated_age_bmi_risk = age_days * calculated_bmi
+# 4. Live Age-BMI Risk Calculation (Age in Years)
+calculated_age_bmi_risk = age_years * calculated_bmi
 
-# 6. Cholesterol Mapping (mg/dL to 1, 2, 3 categories)
+# 5. Cholesterol Mapping (mg/dL to 1, 2, 3 categories)
 if cholesterol < 200:
     cholesterol_mapped = 1  # Normal
 elif 200 <= cholesterol < 240:
@@ -122,7 +119,7 @@ st.info(f"**Calculated BMI:** {calculated_bmi:.2f} kg/m²")
 # Master Dictionary
 # ==========================================
 input_data = {
-    'age': [age_days],
+    'age': [age_years],
     'gender': [gender],
     'height': [height_cm],
     'weight': [weight_kg],
