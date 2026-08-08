@@ -45,7 +45,7 @@ cat_model, xgb_model, lgbm_model = load_prediction_models()
 # ==========================================
 # User Interface (Inputs)
 # ==========================================
-st.subheader("📋 Patient Clinical Profiles")
+st.subheader("Patient Clinical Profiles")
 
 col1, col2 = st.columns(2)
 
@@ -66,7 +66,7 @@ with col2:
     systolic_bp = st.number_input("Systolic Blood Pressure (mmHg)", min_value=80, max_value=250, value=115)
     diastolic_bp = st.number_input("Diastolic Blood Pressure (ap_lo)", min_value=40, max_value=150, value=75)
 
-st.subheader("🩺 Lifestyle & Metabolic Parameters")
+st.subheader("Lifestyle & Metabolic Parameters")
 col3, col4 = st.columns(2)
 
 with col3:
