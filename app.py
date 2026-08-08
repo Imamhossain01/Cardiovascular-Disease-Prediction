@@ -7,7 +7,7 @@ from catboost import CatBoostClassifier
 import joblib
 
 # ==========================================
-# (Theme & Page Config)
+# Theme & Page Config
 # ==========================================
 st.set_page_config(
     page_title="Cardiovascular Disease Predictor",
@@ -69,29 +69,29 @@ with col2:
     diastolic_bp = st.number_input("Diastolic Blood Pressure (ap_lo)", min_value=40, max_value=150, value=90)
 
 # ==========================================
-# Feature Engineering & Live Calculations (চূড়ান্ত ফিক্স)
+# Feature Engineering & Live Calculations
 # ==========================================
-# ১. বয়স বছরেই থাকবে (যেহেতু আপনার মডেল বছরে ট্রেইনড)
+# 1. Age in years
 age_final = age 
 
-# ২. হাইট ও ইঞ্চি রূপান্তর
+# 2. Height conversion (Feet & Inches to cm and meters)
 total_inches = (height_ft * 12) + height_in
 height_cm = total_inches * 2.54
 height_meters = total_inches * 0.0254
 
-# ৩. লাইভ BMI ক্যালকুলেশন
+# 3. Live BMI Calculation
 if height_meters > 0:
     calculated_bmi = weight_kg / (height_meters ** 2)
 else:
     calculated_bmi = 0.0
 
-# ৪. লাইভ পালস প্রেশার ক্যালকুলেশন
+# 4. Live Pulse Pressure Calculation
 calculated_pulse_pressure = systolic_bp - diastolic_bp
 
-# ৫. লাইভ Age-BMI Risk ক্যালকুলেশন (সঠিকভাবে বছরের বয়স দিয়ে)
+# 5. Live Age-BMI Risk Calculation
 calculated_age_bmi_risk = age_final * calculated_bmi
 
-# ৬. কোলেস্টেরল mg/dL থেকে ১, ২, ৩ ক্যাটাগরিতে ম্যাপিং
+# 6. Cholesterol Mapping (mg/dL to 1, 2, 3 categories)
 if cholesterol < 200:
     cholesterol_mapped = 1  # Normal
 elif 200 <= cholesterol < 240:
@@ -99,11 +99,11 @@ elif 200 <= cholesterol < 240:
 else:
     cholesterol_mapped = 3  # Well Above Normal
 
-# স্ক্রিনে লাইভ BMI ডিসপ্লে করা
+# Display Live BMI
 st.info(f"**Calculated BMI:** {calculated_bmi:.2f} kg/m²")
 
 # ==========================================
-# Master Dictionary (সব সম্ভাব্য ফিচারসহ)
+# Master Dictionary
 # ==========================================
 input_data = {
     'age': [age_final],
@@ -123,10 +123,10 @@ input_data = {
 }
 X_test_case = pd.DataFrame(input_data)
 
-# 🔥 [ম্যাজিক লাইন]: ক্যাটবুস্ট মডেলে ঠিক যে যে ফিচার যে সিকোয়েন্সে আছে, 
-# ডাটাফ্রেমের কলামগুলোকে অটোমেটিক সেই মডেলে সাজিয়ে নেওয়া (এতে কলাম শিফটিং এরর দূর হবে)
+# Reorder columns to match CatBoost model feature order
 if cat_model is not None and hasattr(cat_model, 'feature_names_'):
     X_test_case = X_test_case[cat_model.feature_names_]
+
 # ==========================================
 # Prediction 50:30:20 Weighted Fusion
 # ==========================================
@@ -150,10 +150,5 @@ if st.button("Analyze Cardiovascular Risk", type="primary"):
                 
             st.write(f"**Ensemble-Weighted Risk Probability:** {final_probability * 100:.2f}%")
             st.progress(float(final_probability))
-            
-            with st.expander("🔬 See Individual Base Model Probabilities"):
-                st.write(f"🔺 **CatBoost Contribution (50% Weight):** {prob_cat * 100:.2f}%")
-                st.write(f"🔺 **XGBoost Contribution (30% Weight):** {prob_xgb * 100:.2f}%")
-                st.write(f"🔺 **LightGBM Contribution (20% Weight):** {prob_lgbm * 100:.2f}%")
     else:
         st.error("Cannot perform analysis. Model files are missing or could not be loaded.")
