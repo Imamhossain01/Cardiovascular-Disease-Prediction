@@ -11,11 +11,10 @@ import joblib
 # ==========================================
 st.set_page_config(
     page_title="Cardiovascular Disease Predictor",
-    page_icon="❤️",
     layout="centered"
 )
 
-st.title("❤️ Cardiovascular Disease Risk Prediction App")
+st.title("Cardiovascular Disease Risk Prediction")
 st.write("Enter the patient's clinical parameters below to evaluate cardiovascular risk.")
 
 # ==========================================
